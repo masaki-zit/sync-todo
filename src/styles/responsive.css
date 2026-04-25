@@ -1,0 +1,56 @@
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .side-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    width: min(100% - 20px, 1180px);
+    padding: 16px 0;
+  }
+
+  .workspace-header,
+  .new-task-form,
+  .task-card,
+  .conflict-grid,
+  .side-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-header {
+    display: grid;
+  }
+
+  .connection-pill {
+    width: fit-content;
+  }
+
+  .new-task-form {
+    align-items: stretch;
+  }
+
+  .new-task-form > svg {
+    display: none;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+  }
+
+  .task-card {
+    position: relative;
+    padding-right: 58px;
+  }
+
+  .task-card > .danger-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+}

@@ -1,0 +1,108 @@
+.connection-pill {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  background: var(--surface);
+  white-space: nowrap;
+}
+
+.connection-pill.is-online {
+  color: var(--teal);
+  border-color: rgb(15 118 110 / 35%);
+}
+
+.connection-pill.is-offline {
+  color: var(--red);
+  border-color: rgb(190 18 60 / 28%);
+}
+
+.new-task-form {
+  min-height: 64px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.new-task-form > svg {
+  margin-left: 8px;
+  color: var(--teal);
+}
+
+.new-task-form input,
+.task-title-input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: var(--ink);
+  background: transparent;
+}
+
+.new-task-form input {
+  min-height: 42px;
+  font-size: 1rem;
+}
+
+.primary-button,
+.secondary-button,
+.icon-button {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.primary-button {
+  min-height: 42px;
+  padding: 0 15px;
+  color: #ffffff;
+  background: var(--teal);
+}
+
+.secondary-button {
+  min-height: 42px;
+  padding: 0 14px;
+  color: var(--ink);
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+.icon-button {
+  width: 38px;
+  height: 38px;
+  color: var(--muted);
+  background: var(--surface-muted);
+  border-color: var(--line);
+  flex: 0 0 auto;
+}
+
+.primary-button:hover:not(:disabled),
+.secondary-button:hover:not(:disabled),
+.icon-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.danger-button:hover:not(:disabled) {
+  color: var(--red);
+  border-color: rgb(190 18 60 / 32%);
+  background: #fff1f2;
+}
+
+.check-button {
+  color: var(--teal);
+}

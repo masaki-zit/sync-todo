@@ -1,0 +1,81 @@
+.side-panel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.panel-section {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.panel-heading {
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+}
+
+.panel-heading svg {
+  color: var(--teal);
+}
+
+.user-list,
+.log-list {
+  display: grid;
+  gap: 10px;
+}
+
+.user-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.avatar-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgb(15 23 42 / 6%);
+}
+
+.user-row strong,
+.user-row small {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-row small,
+.log-row span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.log-row {
+  padding: 10px;
+  border-left: 3px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface-muted);
+}
+
+.log-row.is-success {
+  border-left-color: var(--green);
+}
+
+.log-row.is-warning {
+  border-left-color: var(--orange);
+}
+
+.log-row p {
+  margin: 3px 0 0;
+  color: var(--ink);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
