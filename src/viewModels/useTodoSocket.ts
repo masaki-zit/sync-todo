@@ -1,3 +1,4 @@
+/** Socket.IO 接続の生存期間と受信イベント反映を担当する view model を定義するファイル。 */
 import { Dispatch, RefObject, SetStateAction, useEffect, useRef, useState } from "react";
 import { dropMutation, removeTaskDraft, sortTasks, upsertTask } from "../models/taskModel";
 import { createTodoSocket, type TodoSocket } from "../services/socketClient";
@@ -11,6 +12,7 @@ import type {
 } from "../shared/types";
 import type { SyncLog } from "./useSyncLogs";
 
+/** ソケット接続管理に必要な状態更新関数群。 */
 interface TodoSocketOptions {
   profile: JoinUserPayload;
   appendLog: (text: string, tone: SyncLog["tone"]) => void;
@@ -24,6 +26,11 @@ interface TodoSocketOptions {
   setConflict: Dispatch<SetStateAction<ConflictPayload | null>>;
 }
 
+/**
+ * サーバーとの接続を開始し、受信イベントを React の状態へ反映する。
+ * @param options 接続管理に必要な状態更新関数
+ * @returns 接続状態とソケット参照
+ */
 export function useTodoSocket({
   profile,
   appendLog,
@@ -53,6 +60,7 @@ export function useTodoSocket({
       appendLog("サーバーから切断されました", "warning");
     });
     socket.on("snapshot", (payload) => {
+      // 初回スナップショットを正とし、共同編集状態をサーバー基準へそろえる。
       setTasks(sortTasks(payload.tasks));
       setUsers(payload.users);
       setEditing(payload.editing);
@@ -62,6 +70,7 @@ export function useTodoSocket({
     socket.on("presence:changed", ({ users }) => setUsers(users));
     socket.on("editing:changed", ({ editing }) => setEditing(editing));
     socket.on("task:created", (payload) => {
+      // 楽観追加した仮 ID のタスクを、サーバー確定後の正式タスクで置き換える。
       setPending((previous) => dropMutation(previous, payload.mutationId));
       setTasks((previous) => sortTasks(upsertTask(
         previous.filter((task) => task.id !== payload.optimisticId),
@@ -72,6 +81,7 @@ export function useTodoSocket({
     socket.on("task:updated", (payload) => {
       setPending((previous) => dropMutation(previous, payload.mutationId));
       setTasks((previous) => sortTasks(upsertTask(previous, payload.task)));
+      // 同じ mutation の更新が確定したら、開いている競合モーダルも閉じる。
       setConflict((current) => (current?.mutationId === payload.mutationId ? null : current));
       appendLog("タスク更新を同期しました", "success");
     });

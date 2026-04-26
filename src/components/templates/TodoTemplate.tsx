@@ -1,3 +1,4 @@
+/** TODO 画面の主要セクションを配置し、見た目へ責務を寄せるテンプレートファイル。 */
 import type { TodoViewModel } from "../../viewModels/useTodoViewModel";
 import { ConnectionPill } from "../atoms/ConnectionPill";
 import { NewTaskForm } from "../molecules/NewTaskForm";
@@ -6,10 +7,16 @@ import { MetricsRow } from "../organisms/MetricsRow";
 import { SidePanel } from "../organisms/SidePanel";
 import { TaskList } from "../organisms/TaskList";
 
+/** `TodoTemplate` に渡す画面全体の表示データ。 */
 interface TodoTemplateProps {
   viewModel: TodoViewModel;
 }
 
+/**
+ * view model を受け取り、画面全体のレイアウトへ割り当てる。
+ * @param props 画面表示に必要な view model
+ * @returns TODO 画面のテンプレート
+ */
 export function TodoTemplate({ viewModel }: TodoTemplateProps) {
   return (
     <main className="app-shell">

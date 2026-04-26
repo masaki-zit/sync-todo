@@ -1,3 +1,4 @@
+/** タスク更新ルールと競合判定をまとめるサービスを定義するファイル。 */
 import { randomUUID } from "node:crypto";
 import type {
   ClientUser,
@@ -14,12 +15,24 @@ import { applyPatch } from "../domain/taskPatch";
 import { cleanTitle } from "../domain/sanitize";
 import type { MemoryTodoRepository } from "../repositories/memoryTodoRepository";
 
+/** タスクサービス生成時に必要な依存関係。 */
 interface TaskServiceOptions {
   ensureUser: (socketId: string) => ClientUser;
   repository: MemoryTodoRepository;
 }
 
+/**
+ * タスク操作のドメインルールをまとめたサービスを生成する。
+ * @param options ユーザー解決関数とリポジトリ
+ * @returns タスク操作群
+ */
 export function createTaskService({ ensureUser, repository }: TaskServiceOptions) {
+  /**
+   * 新しいタスクを生成して保存する。
+   * @param socketId 操作したソケット ID
+   * @param payload 作成要求
+   * @returns 作成結果
+   */
   function createTask(socketId: string, payload: CreateTaskPayload) {
     const now = new Date().toISOString();
     const task: Task = {
@@ -36,6 +49,12 @@ export function createTaskService({ ensureUser, repository }: TaskServiceOptions
     return { mutationId: payload.mutationId, optimisticId: payload.optimisticId, task };
   }
 
+  /**
+   * タスク差分を適用し、必要なら競合結果を返す。
+   * @param socketId 操作したソケット ID
+   * @param payload 更新要求
+   * @returns 更新結果または競合結果
+   */
   function updateTask(socketId: string, payload: UpdateTaskPayload) {
     const existing = repository.getTask(payload.taskId);
     if (!existing) {
@@ -43,6 +62,7 @@ export function createTaskService({ ensureUser, repository }: TaskServiceOptions
     }
 
     if (existing.version !== payload.baseVersion) {
+      // 新しい版がすでに存在する場合は上書きせず、競合として明示的に扱う。
       return {
         conflict: buildConflict(payload, existing),
         kind: "conflict" as const
@@ -54,6 +74,11 @@ export function createTaskService({ ensureUser, repository }: TaskServiceOptions
     return { kind: "updated" as const, mutationId: payload.mutationId, task };
   }
 
+  /**
+   * タスクと関連する編集中状態を削除する。
+   * @param payload 削除要求
+   * @returns 削除結果
+   */
   function deleteTask(payload: DeleteTaskPayload) {
     if (!repository.hasTask(payload.taskId)) {
       return null;
@@ -64,6 +89,12 @@ export function createTaskService({ ensureUser, repository }: TaskServiceOptions
     return { mutationId: payload.mutationId, taskId: payload.taskId };
   }
 
+  /**
+   * 指定タスクの編集中状態を登録または解除する。
+   * @param socketId 操作したソケット ID
+   * @param payload 編集状態通知
+   * @returns 対象タスクが存在したかどうか
+   */
   function setEditing(socketId: string, payload: EditingPayload) {
     if (!repository.hasTask(payload.taskId)) {
       return false;
@@ -83,6 +114,12 @@ export function createTaskService({ ensureUser, repository }: TaskServiceOptions
     return true;
   }
 
+  /**
+   * 競合解決方針に応じてタスクを確定する。
+   * @param socketId 操作したソケット ID
+   * @param payload 競合解決要求
+   * @returns 解決結果
+   */
   function resolveConflict(socketId: string, payload: ConflictResolvePayload) {
     const existing = repository.getTask(payload.taskId);
     if (!existing) {
@@ -90,9 +127,11 @@ export function createTaskService({ ensureUser, repository }: TaskServiceOptions
     }
 
     if (payload.strategy === "use-server") {
+      // サーバー版採用では共有状態は変わらないため、要求元だけを補正すれば足りる。
       return { mutationId: payload.mutationId, scope: "socket" as const, task: existing };
     }
 
+    // ローカル案は最新のサーバー状態へ差分を重ね直し、全員の表示を同じ版へ収束させる。
     const task = applyPatch(existing, payload.localPatch ?? {}, ensureUser(socketId).id);
     repository.saveTask(task);
     return { mutationId: payload.mutationId, scope: "all" as const, task };
@@ -109,4 +148,5 @@ export function createTaskService({ ensureUser, repository }: TaskServiceOptions
   };
 }
 
+/** `createTaskService` が返すタスクサービスの型。 */
 export type TaskService = ReturnType<typeof createTaskService>;

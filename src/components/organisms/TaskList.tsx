@@ -1,7 +1,9 @@
+/** タスク一覧の空状態と通常状態を切り替え、各タスクをカードへ受け渡すファイル。 */
 import { ListTodo } from "lucide-react";
 import type { ClientUser, PendingMutation, Task } from "../../shared/types";
 import { TaskCard } from "../molecules/TaskCard";
 
+/** `TaskList` に渡す一覧表示用のデータと操作群。 */
 interface TaskListProps {
   connected: boolean;
   conflictTaskId?: string;
@@ -17,6 +19,11 @@ interface TaskListProps {
   onToggle: (task: Task) => void;
 }
 
+/**
+ * タスク一覧を表示し、空状態の案内も含めて描画する。
+ * @param props 一覧表示に必要なデータと操作群
+ * @returns タスク一覧セクション
+ */
 export function TaskList(props: TaskListProps) {
   if (props.tasks.length === 0) {
     return (

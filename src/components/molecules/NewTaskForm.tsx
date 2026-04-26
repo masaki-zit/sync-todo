@@ -1,6 +1,8 @@
+/** 新規タスク入力欄と追加操作をまとめるフォーム用ファイル。 */
 import { ListTodo, Plus } from "lucide-react";
 import { ActionButton } from "../atoms/ActionButton";
 
+/** `NewTaskForm` に渡す入力値と操作群。 */
 interface NewTaskFormProps {
   connected: boolean;
   title: string;
@@ -8,6 +10,11 @@ interface NewTaskFormProps {
   onSubmit: () => void;
 }
 
+/**
+ * 新規タスク入力フォームを表示する。
+ * @param props 入力値と送信操作
+ * @returns 新規タスク入力フォーム
+ */
 export function NewTaskForm({ connected, title, onChange, onSubmit }: NewTaskFormProps) {
   return (
     <form

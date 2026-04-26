@@ -1,3 +1,4 @@
+/** サーバー起動時の依存関係を組み立て、Socket.IO を立ち上げるエントリーファイル。 */
 import { Server } from "socket.io";
 import { PORT, STARTED_AT } from "./config";
 import { createSeedTasks } from "./domain/seedTasks";

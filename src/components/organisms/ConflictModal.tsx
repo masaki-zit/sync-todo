@@ -1,15 +1,23 @@
+/** 競合発生時に解決方針を選ばせるモーダルを定義するファイル。 */
 import { Save, Undo2, X } from "lucide-react";
 import type { ConflictPayload } from "../../shared/types";
 import { ActionButton } from "../atoms/ActionButton";
 import { IconButton } from "../atoms/IconButton";
 
+/** `ConflictModal` に渡す競合状態と操作群。 */
 interface ConflictModalProps {
   conflict: ConflictPayload;
   onClose: () => void;
   onResolve: (strategy: "use-local" | "use-server") => void;
 }
 
+/**
+ * サーバー版とローカル版の差分を見せ、解決方針を選ばせる。
+ * @param props 競合状態と解決操作
+ * @returns 競合解決モーダル
+ */
 export function ConflictModal({ conflict, onClose, onResolve }: ConflictModalProps) {
+  // サーバー版の形を流用してローカル案を作ることで、比較 UI を同じ構造で描画する。
   const localTask = {
     ...conflict.serverTask,
     ...conflict.localPatch
@@ -54,6 +62,7 @@ export function ConflictModal({ conflict, onClose, onResolve }: ConflictModalPro
   );
 }
 
+/** 競合比較用カード 1 件分の表示データ。 */
 interface ConflictOptionProps {
   label: string;
   status: string;
@@ -61,6 +70,11 @@ interface ConflictOptionProps {
   version: string;
 }
 
+/**
+ * 競合解決モーダル内の比較項目を 1 件表示する。
+ * @param props 表示ラベルとタスク状態
+ * @returns 比較項目
+ */
 function ConflictOption({ label, status, title, version }: ConflictOptionProps) {
   return (
     <div className="conflict-option">

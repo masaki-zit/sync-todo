@@ -1,9 +1,11 @@
+/** 1 件のタスク行に対する編集・操作・同期状態表示をまとめるファイル。 */
 import { CheckCircle2, Circle, Trash2 } from "lucide-react";
 import type { ClientUser, PendingMutation, Task } from "../../shared/types";
 import { IconButton } from "../atoms/IconButton";
 import { EditorsRow } from "./EditorsRow";
 import { TaskMeta } from "./TaskMeta";
 
+/** `TaskCard` に渡す単一タスク用のデータと操作群。 */
 interface TaskCardProps {
   connected: boolean;
   draftTitle?: string;
@@ -19,8 +21,14 @@ interface TaskCardProps {
   onToggle: (task: Task) => void;
 }
 
+/**
+ * 単一タスクの表示と編集操作を担当する。
+ * @param props タスク表示に必要なデータと操作群
+ * @returns タスクカード
+ */
 export function TaskCard(props: TaskCardProps) {
   const { connected, draftTitle, editors, hasConflict, pendingMutation, task } = props;
+  // 入力中は下書きを優先し、サーバー同期済みのタイトルで手元の入力を上書きしない。
   const title = draftTitle ?? task.title;
 
   return (
@@ -44,6 +52,7 @@ export function TaskCard(props: TaskCardProps) {
           onFocus={() => props.onStartTitleEdit(task)}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
+              // Enter 押下も blur を通して確定し、クリック確定と同じ経路へ寄せる。
               event.currentTarget.blur();
             }
 
