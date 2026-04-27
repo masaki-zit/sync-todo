@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "express": "^5.2.1",
     "lucide-react": "^0.468.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -18,13 +19,14 @@
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
+    "@types/express": "^5.0.6",
     "@types/node": "^22.10.2",
     "@types/react": "^18.3.17",
     "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^9.1.2",
     "tsx": "^4.19.2",
-    "vite": "^6.0.5",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5"
   }
 }
